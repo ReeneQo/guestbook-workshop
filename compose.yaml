@@ -2,20 +2,16 @@ services:
   db:
     image: postgres:16-alpine
     environment:
-      # Значения берутся из .env на хосте — в файл compose секреты не попадают.
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
-      # Данные переживают docker compose down/up.
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      # Готова ли база принимать подключения.
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 5s
       timeout: 3s
       retries: 5
-    # Порт наружу не пробрасываем: база доступна только приложению.
 
   app:
     build: .
@@ -23,14 +19,12 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
-      # Внутри сети compose база доступна по имени сервиса "db".
       POSTGRES_HOST: db
       POSTGRES_PORT: 5432
     ports:
       - "8000:8000"
     depends_on:
       db:
-        # Стартуем приложение только когда healthcheck базы прошёл.
         condition: service_healthy
 
 volumes:
