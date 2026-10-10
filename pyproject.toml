@@ -1,0 +1,17 @@
+[project]
+name = "guestbook"
+version = "0.1.0"
+description = "Гостевая книга на FastAPI + PostgreSQL, доведённая до прода"
+readme = "README.md"
+requires-python = "==3.12.*"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "psycopg[binary]>=3.2",
+    "pydantic-settings>=2.4",
+]
+
+[tool.uv]
+# Приложение, а не библиотека: не пытаемся собирать сам проект в пакет,
+# uv ставит только зависимости в .venv.
+package = false
